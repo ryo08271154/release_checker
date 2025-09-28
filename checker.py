@@ -107,6 +107,7 @@ class Application(tk.Frame):
             self.status_label.config(text="アップデートが完了しました。")
             messagebox.showinfo("アップデート完了", "アップデートが完了しました。")
             self.quit()
+            sys.exit(0)
 
     def check_update(self, check=True):
         self.update_info_text("アップデートを確認しています...")
