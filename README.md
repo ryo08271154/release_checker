@@ -19,7 +19,7 @@ GitHubリポジトリの最新リリースを確認し、アップデートを�
 1. release_checkerを組み込みたいプロジェクトのサブモジュールとして追加
 
 ```bash
-git submodule add <repository-url> release_checker
+git submodule add https://github.com/ryo08271154/release_checker.git release_checker
 ```
 
 2. 依存パッケージのインストール
