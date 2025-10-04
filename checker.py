@@ -5,6 +5,8 @@ import subprocess
 import webbrowser
 import urllib.parse
 import sys
+import os
+import inspect
 
 
 class Application(tk.Frame):
@@ -135,6 +137,9 @@ class Application(tk.Frame):
 
 class ReleaseChecker:
     def __init__(self):
+        caller_frame = inspect.stack()[1]
+        caller_file = caller_frame.filename
+        self.project_root = os.path.dirname(os.path.abspath(caller_file))
         self.owner = None
         self.repo = None
         self.latest_version = None
@@ -160,7 +165,8 @@ class ReleaseChecker:
         try:
             tag = subprocess.check_output(
                 ["git", "describe", "--tags", "--abbrev=0"],
-                stderr=subprocess.STDOUT
+                stderr=subprocess.STDOUT,
+                cwd=self.project_root
             ).decode("utf-8").strip()
             self.current_version = tag
             return tag
@@ -171,7 +177,8 @@ class ReleaseChecker:
         try:
             git_url = urllib.parse.urlparse(subprocess.check_output(
                 ["git", "remote", "get-url", "origin"],
-                stderr=subprocess.STDOUT
+                stderr=subprocess.STDOUT,
+                cwd=self.project_root
             ).decode("utf-8"))
         except subprocess.CalledProcessError:
             return {"owner": None, "repo": None}
@@ -202,7 +209,7 @@ class ReleaseChecker:
         for command in commands:
             try:
                 result = subprocess.check_output(
-                    command, stderr=subprocess.STDOUT)
+                    command, stderr=subprocess.STDOUT, cwd=self.project_root)
             except subprocess.CalledProcessError as e:
                 raise Exception(
                     f"Command {' '.join(command)} failed with return code {e.returncode} \n{e.output.decode('utf-8')}")
